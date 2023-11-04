@@ -32,8 +32,7 @@ TrailSegmentEntry = namedtuple('TrailSegmentEntry', ['v_start', 'v_end', 'edge_i
 def find_min_trail(g, v_start, v_end):
     trail_elemnets=[]
     min_path= nx.dijkstra_path(g,source=v_start, target=v_end, weight='weight')
-    result = f"{v_start} "
-    total_weight = 0.0
+
     for i in range(len(min_path)-1):
         start_node= min_path[i]
         end_node= min_path[i+1]
@@ -44,15 +43,9 @@ def find_min_trail(g, v_start, v_end):
         edge_id= min_weight_edge['id']
         weight= min_weight_edge['weight']
         trail_elemnets.append(TrailSegmentEntry(start_node,end_node, edge_id, weight))
-        
 
-        result += f"-[{edge_id}: {weight}]-> {end_node} "
-        total_weight += weight
-
-    result += f"(total = {total_weight})"
-
-    return result
-
+    return trail_elemnets
+"""
 G = nx.MultiDiGraph()
 G.add_edge(1, 2, weight=0.5, id=1)
 G.add_edge(2, 3, weight=0.4, id=2)
@@ -63,10 +56,26 @@ v_start = 1
 v_end = 3
 
 segments = find_min_trail(G, v_start, v_end)
-print(segments)
-print(nx.dijkstra_path_length(G, v_start, v_end))
+for segment in segments:
+    print(segment)
+"""
 
 
+def trail_to_str(trail):
+    if not trail:
+        return ""
 
+    result = f"{trail[0].v_start} "
+    total_weight = 0.0
 
+    for segment in trail:
+        result += f"-[{segment.edge_id}: {segment.weight}]-> {segment.v_end} "
+        total_weight += segment.weight
+
+    result += f"(total = {total_weight})"
+    return result
+"""
+str_segments=trail_to_str(segments)
+print(str_segments)
+"""
 
