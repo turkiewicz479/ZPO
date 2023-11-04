@@ -19,7 +19,8 @@ def neighbors(adjlist: AdjList, start_vertex_id: VertexID,
     
     for u in adjlist:
         for v in adjlist[u]:
-            kolor[v]=0 #Biały, malowanie każdego elementu do którego można dotrzeć (nie tylko takiego który jest w słowniku)
+            kolor[v]=0 #Biały
+            #malowanie każdego elementu do którego można dotrzeć (nie tylko takiego który jest w słowniku)
     kolor[start_vertex_id]=1#Szary
     distance[start_vertex_id] = 0
     Q=[start_vertex_id]
@@ -28,9 +29,12 @@ def neighbors(adjlist: AdjList, start_vertex_id: VertexID,
         u=Q.pop(0)
         for v in adjlist.get(u, []):
             if v in kolor and kolor[v]==0:
-                kolor[v]=1
+                #jeżeli v jest zawarte w zbiorze kolorów i jest białe
+                kolor[v]=1#zamiana na szary
                 distance[v] = distance[u] + 1
+                #zapisane odległości danego elementu(v) od elemntu początkowego
                 if distance[v] <= max_distance:
+                    #jeżeli znajduje się w odpowiedniej odległości to zostanie dodany do zbioru sąsiadów
                     neig_set.add(v)
                     Q.append(v)
                      
