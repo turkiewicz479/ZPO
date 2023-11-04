@@ -14,26 +14,33 @@ Distance = int
 def neighbors(adjlist: AdjList, start_vertex_id: VertexID,
               max_distance: Distance) -> Set[VertexID]:
     neig_set = set()
-    white = []
-    grey = [start_vertex_id]
-    black = []
-    for i in range(max_distance):
-        new_white=[]
-        for x in grey:
-                #przechodzenie prez kazdy szary element
-            if x in adjlist: 
-                for y in adjlist[x]:
-                    #przechodzenie przez sasiadow kazdego szarego elementu
-                    if y not in white and y not in grey and y not in black:
-                        new_white.append(y)
-                            #jezeli ten element nie jest pomalowany to pomaluj go na biało
-                        neig_set.add(y)
-                    elif y in white:
-                            white.remove(y)
-                            grey.append(y)
-                    black.extend(grey)
-                    grey= new_white
+    kolor={}
+    distance = {}
+    
+    for u in adjlist:
+        for v in adjlist[u]:
+            kolor[v]=0 #Biały, malowanie każdego elementu do którego można dotrzeć (nie tylko takiego który jest w słowniku)
+    kolor[start_vertex_id]=1#Szary
+    distance[start_vertex_id] = 0
+    Q=[start_vertex_id]
+
+    while Q:
+        u=Q.pop(0)
+        for v in adjlist.get(u, []):
+            if v in kolor and kolor[v]==0:
+                kolor[v]=1
+                distance[v] = distance[u] + 1
+                if distance[v] <= max_distance:
+                    neig_set.add(v)
+                    Q.append(v)
+                     
+                 
+        kolor[u] = 2#Czarny
+    
+
     return set(neig_set)
+
+"""
 G = {
     1: [2, 4],
     2: [3],
@@ -42,11 +49,7 @@ G = {
     7: [1]
 }
 d=2
-set1=neighbors(G, 1, d)
+set1=neighbors(G, 1, 1)
 print(set1)
-
-                
-
-                
-
+"""
 #raise NotImplementedError()
