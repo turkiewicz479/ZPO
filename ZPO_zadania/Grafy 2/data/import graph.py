@@ -1,9 +1,33 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+from typing import List
 import networkx as nx
-from collections import namedtuple
-def load_multigraph_from_file(filepath):
+
+
+VertexID = int
+EdgeID = int
+
+class TrailSegmentEntry:
+    def __init__(self, v_start, v_end, edge_id, weight):
+        self.v_start = v_start
+        self.v_end = v_end
+        self.edge_id = edge_id
+        self.weight = weight
+
+    def __str__(self):
+        return f"{self.v_start} -[{self.edge_id}: {self.weight}]-> {self.v_end}"
+    
+    
+Trail = List[TrailSegmentEntry]
+def load_multigraph_from_file(filepath: str)-> nx.MultiDiGraph:
+    """Stwórz multigraf na podstawie danych o krawędziach wczytanych z pliku.
+ 
+    :param filepath: względna ścieżka do pliku (wraz z rozszerzeniem)
+    :return: multigraf
+    """
 
     G = nx.MultiDiGraph()
-    with open(filename, 'r') as file:
+    with open(filepath, 'r') as file:
         for line in file:
             line = line.strip()
             if not line:
@@ -19,17 +43,17 @@ def load_multigraph_from_file(filepath):
                 G.add_edge(start_node, end_node, weight=lenght)
                 #dodawanie zapisanych elementów jakko własności krawęzi
     return G
-"""
+
 filename = 'data/graph_adjmat.txt'
 graph = load_multigraph_from_file(filename)
 print("Multigraph edges:")
 for edge in graph.edges(data=True):
     print(edge)
-"""
 
-TrailSegmentEntry = namedtuple('TrailSegmentEntry', ['v_start', 'v_end', 'edge_id', 'weight'])
 
-def find_min_trail(g, v_start, v_end):
+
+
+def find_min_trail(g: nx.MultiDiGraph, v_start: VertexID, v_end: VertexID) -> Trail:
     trail_elemnets=[]
     min_path= nx.dijkstra_path(g,source=v_start, target=v_end, weight='weight')
 
@@ -45,7 +69,7 @@ def find_min_trail(g, v_start, v_end):
         trail_elemnets.append(TrailSegmentEntry(start_node,end_node, edge_id, weight))
 
     return trail_elemnets
-"""
+
 G = nx.MultiDiGraph()
 G.add_edge(1, 2, weight=0.5, id=1)
 G.add_edge(2, 3, weight=0.4, id=2)
@@ -58,7 +82,7 @@ v_end = 3
 segments = find_min_trail(G, v_start, v_end)
 for segment in segments:
     print(segment)
-"""
+
 
 
 def trail_to_str(trail):
@@ -74,8 +98,7 @@ def trail_to_str(trail):
 
     result += f"(total = {total_weight})"
     return result
-"""
+
 str_segments=trail_to_str(segments)
 print(str_segments)
-"""
 
